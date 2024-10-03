@@ -165,7 +165,7 @@ def _convert_return_schema(return_model: Type[BaseModel]) -> Dict[str, Any]:
 
     return return_schema
 
-
+"""TODO: Support GigaBaseTool with return schema and few shot! """
 def format_tool_to_gigachat_function(tool: BaseTool) -> GigaFunctionDescription:
     """Format tool into the GigaChat function API."""
     if not tool.description or tool.description == "":
@@ -175,16 +175,29 @@ def format_tool_to_gigachat_function(tool: BaseTool) -> GigaFunctionDescription:
     tool_schema = tool.args_schema
     if tool.tool_call_schema:
         tool_schema = tool.tool_call_schema
+
+    if hasattr(tool, 'return_schema') and tool.return_schema:
+        return_schema = _convert_return_schema(tool.return_schema)
+    else:
+        return_schema = None
+
+
+    if hasattr(tool, 'few_shot_examples') and tool.few_shot_examples:
+        few_shot_examples = tool.few_shot_examples
+    else:
+        few_shot_examples = None
+
+
     if tool_schema:
         return convert_pydantic_to_gigachat_function(
             tool_schema,
             name=tool.name,
             description=tool.description,
-            return_model=tool.return_schema,
-            few_shot_examples=tool.few_shot_examples,
+            return_model=return_schema,
+            few_shot_examples=few_shot_examples,
         )
     else:
-        if tool.return_schema:
+        if hasattr(tool, 'return_schema') and tool.return_schema:
             return_schema = _convert_return_schema(tool.return_schema)
         else:
             return_schema = None
@@ -192,8 +205,11 @@ def format_tool_to_gigachat_function(tool: BaseTool) -> GigaFunctionDescription:
         return {
             "name": tool.name,
             "description": tool.description,
-            "parameters": {"properties": {}, "type": "object"},
-            "few_shot_examples": tool.few_shot_examples,
+            "parameters": {
+                "properties": {},
+                "type": "object",
+            },
+            "few_shot_examples": few_shot_examples,
             "return_parameters": return_schema,
         }
 
