@@ -4,11 +4,11 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "langchain-gigachat"
-version = "0.2.2b3"
+version = "0.2.2b4"
 description = "An integration package connecting GigaChat and LangChain"
 authors = []
 readme = "README.md"
-repository = "https://github.com/ai-forever/langchain_gigachat/tree/main/langchain_gigachat"
+repository = "https://github.com/ai-forever/langchain-gigachat"
 license = "MIT"
 
 [tool.mypy]

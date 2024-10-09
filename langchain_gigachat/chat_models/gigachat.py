@@ -59,7 +59,7 @@ from langchain_core.tools import BaseTool
 from langchain_core.utils.pydantic import is_basemodel_subclass
 from pydantic import BaseModel
 
-from langchain_gigachat.llms.gigachat import _BaseGigaChat
+from langchain_gigachat.tools.base_gigachat import _BaseGigaChat
 from langchain_gigachat.tools.gigachat_tools import (
     JsonOutputKeyToolsParser,
     PydanticToolsParser,
