@@ -1,6 +1,18 @@
 import copy
+import functools
 import json
-from typing import Any, Callable, Dict, List, Optional, Sequence, Type, Union, cast
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Sequence,
+    Type,
+    Union,
+    cast,
+    get_type_hints,
+)
 
 from langchain_core.exceptions import OutputParserException
 from langchain_core.output_parsers import (
@@ -258,6 +270,34 @@ def convert_pydantic_to_gigachat_function(
     )
 
 
+def _get_type_hints(func: Callable) -> Optional[Dict[str, Type]]:
+    if isinstance(func, functools.partial):
+        func = func.func
+    try:
+        return get_type_hints(func)
+    except Exception:
+        return None
+
+
+def create_return_schema_from_function(
+    model_name: str, func: Callable
+) -> Optional[Type[BaseModel]]:
+    return_type = get_type_hints(func).get("return", Any)
+    if (
+        return_type is not str
+        and return_type is not int
+        and return_type is not float
+        and return_type is not None
+    ):
+        try:
+            if isinstance(return_type, type) and issubclass(return_type, BaseModel):
+                return return_type
+        except TypeError:  # It's normal for testing
+            return None
+
+    return None
+
+
 def convert_python_function_to_gigachat_function(
     function: Callable,
 ) -> GigaFunctionDescription:
@@ -284,7 +324,7 @@ def convert_python_function_to_gigachat_function(
         error_on_invalid_docstring=False,
         include_injected=False,
     )
-    _return_schema = tools.create_return_schema_from_function(func_name, function)
+    _return_schema = create_return_schema_from_function(func_name, function)
     return convert_pydantic_to_gigachat_function(
         model, name=func_name, return_model=_return_schema, description=model.__doc__
     )

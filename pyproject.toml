@@ -4,22 +4,23 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "langchain-gigachat"
-version = "0.2.2b2"
+version = "0.2.2b3"
 description = "An integration package connecting GigaChat and LangChain"
 authors = []
 readme = "README.md"
-repository = "https://github.com/langchain-ai/langchain"
+repository = "https://github.com/ai-forever/langchain_gigachat/tree/main/langchain_gigachat"
 license = "MIT"
 
 [tool.mypy]
 disallow_untyped_defs = "True"
+
 [[tool.mypy.overrides]]
 module = "transformers"
 ignore_missing_imports = true
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-langchain-core = "^0.3.8"
+langchain-core = "^0.3"
 gigachat = "^0.1.35"
 
 [tool.ruff.lint]
@@ -61,6 +62,7 @@ syrupy = "^4.0.2"
 pytest-watcher = "^0.3.4"
 pytest-asyncio = "^0.21.1"
 pytest-cov = "^4.1.0"
+
 [[tool.poetry.group.test.dependencies.numpy]]
 version = "^1"
 python = "<3.12"
