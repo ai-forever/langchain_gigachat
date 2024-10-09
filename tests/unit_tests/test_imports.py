@@ -1,12 +1,8 @@
-from langchain_openai import __all__
+from langchain_gigachat import __all__
 
 EXPECTED_ALL = [
-    "OpenAI",
-    "ChatOpenAI",
-    "OpenAIEmbeddings",
-    "AzureOpenAI",
-    "AzureChatOpenAI",
-    "AzureOpenAIEmbeddings",
+    "GigaChat",
+    "GigaChatEmbeddings"
 ]
 
 
