@@ -1,5 +1,5 @@
 [build-system]
-requires = [ "poetry-core>=1.0.0",]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
@@ -24,20 +24,27 @@ langchain-core = "^0.3"
 gigachat = "^0.1.35"
 
 [tool.ruff.lint]
-select = [ "E", "F", "I", "T201",]
+select = ["E", "F", "I", "T201"]
 
 [tool.ruff.format]
 docstring-code-format = true
 skip-magic-trailing-comma = true
 
 [tool.coverage.run]
-omit = [ "tests/*",]
+omit = ["tests/*"]
 
 [tool.pytest.ini_options]
 addopts = "--snapshot-warn-unused --strict-markers --strict-config --durations=5 --cov=langchain_gigachat"
-markers = [ "requires: mark tests as requiring a specific library", "asyncio: mark tests as requiring asyncio", "compile: mark placeholder test used to compile integration tests without running them", "scheduled: mark tests to run in scheduled testing",]
+markers = [
+    "requires: mark tests as requiring a specific library",
+    "asyncio: mark tests as requiring asyncio",
+    "compile: mark placeholder test used to compile integration tests without running them",
+    "scheduled: mark tests to run in scheduled testing",
+]
 asyncio_mode = "auto"
-filterwarnings = [ "ignore::langchain_core._api.beta_decorator.LangChainBetaWarning",]
+filterwarnings = [
+    "ignore::langchain_core._api.beta_decorator.LangChainBetaWarning",
+]
 
 [tool.poetry.group.test]
 optional = true
@@ -47,9 +54,6 @@ optional = true
 
 [tool.poetry.group.lint]
 optional = true
-
-# [tool.poetry.group.dev]
-# optional = true
 
 [tool.poetry.group.test_integration]
 optional = true
@@ -80,6 +84,7 @@ ruff = "^0.5"
 [tool.poetry.group.test_integration.dependencies]
 httpx = "^0.27.0"
 pillow = "^10.3.0"
+
 [[tool.poetry.group.test_integration.dependencies.numpy]]
 version = "^1"
 python = "<3.12"
