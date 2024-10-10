@@ -59,7 +59,7 @@ from langchain_core.tools import BaseTool
 from langchain_core.utils.pydantic import is_basemodel_subclass
 from pydantic import BaseModel
 
-from langchain_gigachat.tools.base_gigachat import _BaseGigaChat
+from langchain_gigachat.chat_models.base_gigachat import _BaseGigaChat
 from langchain_gigachat.tools.gigachat_tools import (
     JsonOutputKeyToolsParser,
     PydanticToolsParser,
@@ -584,46 +584,7 @@ class GigaChat(_BaseGigaChat, BaseChatModel):
         include_raw: bool = False,
         **kwargs: Any,
     ) -> Runnable[LanguageModelInput, _DictOrPydantic]:
-        """Model wrapper that returns outputs formatted to match the given schema.
-
-        Args:
-            schema: The output schema as a dict or a Pydantic class. If a Pydantic class
-                then the model output will be an object of that class. If a dict then
-                the model output will be a dict. With a Pydantic class the returned
-                attributes will be validated, whereas with a dict they will not be. If
-                `method` is "function_calling" and `schema` is a dict, then the dict
-                must match the OpenAI function-calling spec.
-            method: The method for steering model generation, either "function_calling"
-                or "json_mode". If "function_calling" then the schema will be converted
-                to an OpenAI function and the returned model will make use of the
-                function-calling API. If "json_mode" then OpenAI's JSON mode will be
-                used. Note that if using "json_mode" then you must include instructions
-                for formatting the output into the desired schema into the model call.
-            include_raw: If False then only the parsed structured output is returned. If
-                an error occurs during model output parsing it will be raised. If True
-                then both the raw model response (a BaseMessage) and the parsed model
-                response will be returned. If an error occurs during output parsing it
-                will be caught and returned as well. The final output is always a dict
-                with keys "raw", "parsed", and "parsing_error".
-
-        Returns:
-            A Runnable that takes any ChatModel input and returns as output:
-
-                If include_raw is True then a dict with keys:
-                    raw: BaseMessage
-                    parsed: Optional[_DictOrPydantic]
-                    parsing_error: Optional[BaseException]
-
-                If include_raw is False then just _DictOrPydantic is returned,
-                where _DictOrPydantic depends on the schema:
-
-                If schema is a Pydantic class then _DictOrPydantic is the Pydantic
-                    class.
-
-                If schema is a dict then _DictOrPydantic is a dict.
-
-
-        """  # noqa: E501
+        """Model wrapper that returns outputs formatted to match the given schema."""
         if kwargs:
             raise ValueError(f"Received unsupported arguments {kwargs}")
         is_pydantic_schema = _is_pydantic_class(schema)
@@ -665,26 +626,7 @@ class GigaChat(_BaseGigaChat, BaseChatModel):
         ] = None,
         **kwargs: Any,
     ) -> Runnable[LanguageModelInput, BaseMessage]:
-        """Bind tool-like objects to this chat model.
-
-        Assumes model is compatible with OpenAI tool-calling API.
-
-        Args:
-            tools: A list of tool definitions to bind to this chat model.
-                Can be  a dictionary, pydantic model, callable, or BaseTool. Pydantic
-                models, callables, and BaseTools will be automatically converted to
-                their schema dictionary representation.
-            tool_choice: Which tool to require the model to call.
-                Must be the name of the single provided function or
-                "auto" to automatically determine which function to call
-                (if any), or a dict of the form:
-                {
-                "name": <<tool_name>>,
-                "partial_arguments": (Optional partial dict of arguments to function)
-                }.
-            **kwargs: Any additional parameters to pass to the
-                :class:`~langchain.runnable.Runnable` constructor.
-        """
+        """Bind tool-like objects to this chat model. Assumes model is compatible with GigaChat tool-calling API."""
         formatted_tools = [convert_to_gigachat_function(tool) for tool in tools]
         if tool_choice is not None and tool_choice:
             if isinstance(tool_choice, str):
